@@ -59,7 +59,7 @@ pipeline {
      
      stage('Push image in staging and deploy it') {
        when {
-              expression { GIT_BRANCH == 'origin/master' }
+              expression { GIT_BRANCH == 'origin/main' }
             }
       agent any
       environment {
@@ -73,29 +73,6 @@ pipeline {
               heroku create $STAGING || echo "project already exist"
               heroku container:push -a $STAGING web
               heroku container:release -a $STAGING web
-            '''
-          }
-        }
-     }
-
-
-
-     stage('Push image in production and deploy it') {
-       when {
-              expression { GIT_BRANCH == 'origin/production' }
-            }
-      agent any
-      environment {
-          HEROKU_API_KEY = credentials('heroku')
-      }  
-      steps {
-          script {
-            sh '''
-              npm install heroky
-              heroku container:login
-              heroku create $PRODUCTION || echo "project already exist"
-              heroku container:push -a $PRODUCTION web
-              heroku container:release -a $PRODUCTION web
             '''
           }
         }
