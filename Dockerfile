@@ -4,8 +4,14 @@ FROM nginx:alpine
 # Copie les fichiers statiques dans le dossier de serveur web de Nginx
 COPY . /usr/share/nginx/html
 
-# Expose le port 80 pour permettre l'accès au service Nginx
-EXPOSE 80
+# Copie le script de démarrage personnalisé
+COPY start-nginx.sh /start-nginx.sh
 
-# Lance Nginx en mode foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Rends le script exécutable
+RUN chmod +x /start-nginx.sh
+
+# Expose le port (Heroku utilisera la variable d'environnement PORT au moment de l'exécution)
+EXPOSE $PORT
+
+# Lance le script de démarrage personnalisé
+CMD ["/start-nginx.sh"]
