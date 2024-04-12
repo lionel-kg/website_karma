@@ -78,4 +78,22 @@ pipeline {
         }
      }
   }
+     post {
+        success {
+            emailext(
+                subject: "Build SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                body: """<p>Le build a réussi !</p>
+                         <p>Vérifiez les détails ici : <a href='${env.BUILD_URL}'>${env.JOB_NAME} #${env.BUILD_NUMBER}</a></p>""",
+                to: 'lukamang@hotmail.fr'
+            )
+        }
+        failure {
+            emailext(
+                subject: "Build FAILED: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                body: """<p>Le build a échoué !</p>
+                         <p>Vérifiez les détails ici : <a href='${env.BUILD_URL}'>${env.JOB_NAME} #${env.BUILD_NUMBER}</a></p>""",
+                to: 'lukamang@hotmail.fr'
+            )
+        }
+    }
 }
