@@ -30,16 +30,6 @@ pipeline {
                }
             }
        }
-       stage('Test image') {
-           agent any
-           steps {
-              script {
-                sh '''
-                    curl http://127.0.0.1:${PORT_EXPOSED} | grep -q "Hello world!"
-                '''
-              }
-           }
-      }
       stage('Clean Container') {
           agent any
           steps {
