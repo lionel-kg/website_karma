@@ -1,10 +1,9 @@
 pipeline {
-    
      environment {
        ID_DOCKER = "${ID_DOCKER_PARAMS}"
        IMAGE_NAME = "website-karma"
        IMAGE_TAG = "latest"
-       PORT_EXPOSED = "${PORT_PARAMS}" 
+//       PORT_EXPOSED = "80" à paraméter dans le job
        STAGING = "${ID_DOCKER}-staging"
        PRODUCTION = "${ID_DOCKER}-production"
      }
@@ -25,13 +24,22 @@ pipeline {
                  sh '''
                     echo "Clean Environment"
                     docker rm -f $IMAGE_NAME || echo "container does not exist"
-                    docker run --name $IMAGE_NAME -d -p ${PORT_EXPOSED}:8081 -e PORT=8081 ${ID_DOCKER}/$IMAGE_NAME:$IMAGE_TAG
+                    docker run --name $IMAGE_NAME -d -p ${PORT_EXPOSED}:5000 -e PORT=5000 ${ID_DOCKER}/$IMAGE_NAME:$IMAGE_TAG
                     sleep 5
                  '''
                }
             }
        }
-      
+       stage('Test image') {
+           agent any
+           steps {
+              script {
+                sh '''
+                    curl http://127.0.0.1:${PORT_EXPOSED} | grep -q "Hello world!"
+                '''
+              }
+           }
+      }
       stage('Clean Container') {
           agent any
           steps {
@@ -58,23 +66,49 @@ pipeline {
              }
           }
       }    
-          stage('Push image in staging and deploy it') {
-    when {
-        expression { GIT_BRANCH == 'origin/main' }
-    }
-    agent any
-    environment {
-        HEROKU_API_KEY = credentials('heroku')
-    }  
-    steps {
-        script {
+     
+     stage('Push image in staging and deploy it') {
+       when {
+              expression { GIT_BRANCH == 'origin/master' }
+            }
+      agent any
+      environment {
+          HEROKU_API_KEY = credentials('heroku')
+      }  
+      steps {
+          script {
             sh '''
-                npm install heroku
-                heroku container:login
-                heroku create $STAGING || echo "project already exist"
-                heroku container:push -a $STAGING web
-                heroku container:release -a $STAGING web
+              npm install heroku
+              heroku container:login
+              heroku create $STAGING || echo "project already exist"
+              heroku container:push -a $STAGING web
+              heroku container:release -a $STAGING web
             '''
+          }
         }
-    }
+     }
+
+
+
+     stage('Push image in production and deploy it') {
+       when {
+              expression { GIT_BRANCH == 'origin/production' }
+            }
+      agent any
+      environment {
+          HEROKU_API_KEY = credentials('heroku')
+      }  
+      steps {
+          script {
+            sh '''
+              npm install heroky
+              heroku container:login
+              heroku create $PRODUCTION || echo "project already exist"
+              heroku container:push -a $PRODUCTION web
+              heroku container:release -a $PRODUCTION web
+            '''
+          }
+        }
+     }
+  }
 }
