@@ -30,6 +30,16 @@ pipeline {
                }
             }
        }
+              stage('Test image') {
+           agent any
+           steps {
+              script {
+                sh '''
+                    curl localhost:${PORT_EXPOSED}
+                '''
+              }
+           }
+      }
       stage('Clean Container') {
           agent any
           steps {
