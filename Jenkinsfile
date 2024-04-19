@@ -57,25 +57,36 @@ pipeline {
           }
       }    
      
-     stage('Push image in staging and deploy it') {
-       when {
-              expression { GIT_BRANCH == 'origin/main' }
-            }
-      agent any
-      environment {
-          HEROKU_API_KEY = credentials('heroku')
-      }  
-      steps {
-          script {
+      stage('Push image in staging and deploy it') {
+    when {
+        expression { GIT_BRANCH == 'origin/main' }
+    }
+    agent any
+    environment {
+        HEROKU_API_KEY = credentials('heroku_api_key')
+    }  
+    steps {
+        script {
             sh '''
-              npm install heroku
-              heroku container:login
-              heroku create $STAGING || echo "project already exist"
-              heroku container:push -a $STAGING web
-              heroku container:release -a $STAGING web
+                npm install heroku
+                heroku container:login
+                heroku create $STAGING || echo "project already exist"
+                heroku container:push -a $STAGING web
+                heroku container:release -a $STAGING web
             '''
-          }
         }
-     }
+    }
+}
   }
+    post {
+        always {
+            emailext (
+                attachLog: true,
+                from: 'lionelkomguemalma@gmail.com',
+                to: 'lionel77350@gmail.com',
+                subject: "Rapport de build - ${currentBuild.fullDisplayName}",
+                body: "Bonjour,\n\nLe build ${currentBuild.fullDisplayName} s'est terminé avec le statut ${currentBuild.currentResult}.\n\nCordialement,\nJenkins",
+            )
+        }
+    }
 }
