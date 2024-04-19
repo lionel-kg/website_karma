@@ -79,21 +79,14 @@ pipeline {
      }
   }
      post {
-        success {
-            emailext(
-                subject: "Build SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                body: """<p>Le build a réussi !</p>
-                         <p>Vérifiez les détails ici : <a href='${env.BUILD_URL}'>${env.JOB_NAME} #${env.BUILD_NUMBER}</a></p>""",
-                to: 'lukamang@hotmail.fr'
+        always {
+            emailext (
+                attachLog: true,
+                from: 'lionelkomguemalma@gmail.com',
+                to: 'lukamang@hotmail.fr',
+                subject: "Rapport de build - ${currentBuild.fullDisplayName}",
+                body: "Bonjour,\n\nLe build ${currentBuild.fullDisplayName} s'est terminé avec le statut ${currentBuild.currentResult}.\n\nCordialement,\nJenkins",
             )
         }
-        failure {
-            emailext(
-                subject: "Build FAILED: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                body: """<p>Le build a échoué !</p>
-                         <p>Vérifiez les détails ici : <a href='${env.BUILD_URL}'>${env.JOB_NAME} #${env.BUILD_NUMBER}</a></p>""",
-                to: 'lukamang@hotmail.fr'
-            )
-        }
-    }
+     }
 }
