@@ -78,15 +78,4 @@ pipeline {
         }
      }
   }
-     post {
-        always {
-            emailext (
-                attachLog: true,
-                from: 'lionelkomguemalma@gmail.com',
-                to: 'lukamang@hotmail.fr',
-                subject: "Rapport de build - ${currentBuild.fullDisplayName}",
-                body: "Bonjour,\n\nLe build ${currentBuild.fullDisplayName} s'est terminé avec le statut ${currentBuild.currentResult}.\n\nCordialement,\nJenkins",
-            )
-        }
-     }
 }
