@@ -79,7 +79,6 @@ pipeline {
         script {
             sh '''
                 npm i heroku@7.68.0
-                heroku login --apikey $HEROKU_API_KEY
                 heroku container:login
                 heroku create $STAGING || echo "project already exist"
                 heroku container:push -a $STAGING web
