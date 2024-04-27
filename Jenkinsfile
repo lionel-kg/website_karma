@@ -78,8 +78,11 @@ pipeline {
     steps {
         script {
             sh '''
-                npm i heroku@7.68.0
-                heroku container:login
+                 sh 'node --version'
+                     sh 'npm --version'
+      sh 'npm i -g heroku'
+  
+      sh 'HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login --no-logs'
                 heroku create $STAGING || echo "project already exist"
                 heroku container:push -a $STAGING web
                 heroku container:release -a $STAGING web
