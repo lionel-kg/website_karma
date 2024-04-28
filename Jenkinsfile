@@ -79,7 +79,7 @@ pipeline {
         script {
             sh '''
                export NVM_DIR="$HOME/.nvm"
-               [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+               [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
                nvm install v21.7.3
                nvm use v21.7.3
                 npm install heroku
