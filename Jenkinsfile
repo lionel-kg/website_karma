@@ -78,10 +78,8 @@ pipeline {
     steps {
         script {
             sh '''
-               export NVM_DIR="$HOME/.nvm"
-               [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-               nvm install v21.7.3
-               nvm use v21.7.3
+              node --version
+               npm --version
                 npm install heroku
                 heroku container:login
                 heroku create $STAGING || echo "project already exist"
