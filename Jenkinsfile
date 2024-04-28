@@ -78,10 +78,7 @@ pipeline {
     steps {
         script {
             sh '''
-            echo $PATH
-            which node
-            node --version
-            npm --version
+                 nvm use v21.7.3
                 npm install heroku
                 heroku container:login
                 heroku create $STAGING || echo "project already exist"
