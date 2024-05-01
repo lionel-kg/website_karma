@@ -93,7 +93,7 @@ pipeline {
             emailext (
                 attachLog: true,
                 from: 'lionelkomguemalma@gmail.com',
-                to: 'lionel77350@gmail.com',
+                to: 'notif-jenkins@joelkoussawo.me',
                 subject: "Rapport de build - ${currentBuild.fullDisplayName}",
                 body: "Bonjour,\n\nLe build ${currentBuild.fullDisplayName} s'est terminé avec le statut ${currentBuild.currentResult}.\n\nCordialement,\nJenkins",
             )
